@@ -35,7 +35,7 @@ class GlApp {
         };
 
         this.scene = scene;                          // current scene to draw (list of models and lights)
-        this.algorithm = 'gouraud';                  // current shading algorithm to use for rendering
+        this.algorithm = 'gouraud_color';                  // current shading algorithm to use for rendering
 
 
         // download and compile shaders into GPU program
@@ -159,8 +159,15 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
-            let selected_shader = 'emissive';
+            /*
+            if (this.algorithm == 'emissive'){
+                let selected_shader = 'emissive';
+                this.gl.useProgram(this.shader[selected_shader].program);
+            } */
+            
+            let selected_shader = 'gouraud_color';
             this.gl.useProgram(this.shader[selected_shader].program);
+            
 
             // transform model to proper position, size, and orientation
             glMatrix.mat4.identity(this.model_matrix);
