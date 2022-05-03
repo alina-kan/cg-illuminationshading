@@ -35,7 +35,7 @@ class GlApp {
         };
 
         this.scene = scene;                          // current scene to draw (list of models and lights)
-        this.algorithm = 'gouraud_color';                  // current shading algorithm to use for rendering
+        this.algorithm = 'gouraud';                  // current shading algorithm to use for rendering
 
 
         // download and compile shaders into GPU program
@@ -61,7 +61,7 @@ class GlApp {
         this.shader.gouraud_color = this.createShaderProgram(shaders[0], shaders[1]);
         this.shader.gouraud_texture = this.createShaderProgram(shaders[2], shaders[3]);
         this.shader.phong_color = this.createShaderProgram(shaders[4], shaders[5]);
-        this.shader.phone_texture = this.createShaderProgram(shaders[6], shaders[7]);
+        this.shader.phong_texture = this.createShaderProgram(shaders[6], shaders[7]);
         this.shader.emissive = this.createShaderProgram(shaders[8], shaders[9]);
 
         this.initializeGlApp();
@@ -159,13 +159,8 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
-            /*
-            if (this.algorithm == 'emissive'){
-                let selected_shader = 'emissive';
-                this.gl.useProgram(this.shader[selected_shader].program);
-            } */
             
-            let selected_shader = 'gouraud_color';
+            let selected_shader = this.algorithm + '_color';
             this.gl.useProgram(this.shader[selected_shader].program);
             
 
@@ -181,6 +176,13 @@ class GlApp {
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.projection_matrix, false, this.projection_matrix);
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.view_matrix, false, this.view_matrix);
             this.gl.uniformMatrix4fv(this.shader[selected_shader].uniforms.model_matrix, false, this.model_matrix);
+            //also set for other values in shaders
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_ambient, this.scene.light.ambient); //light_ambient
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_position, this.scene.light.point_lights[0].position); //light_position
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_color, this.scene.light.point_lights[0].color); //light_color
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.camera_position, this.scene.camera.position); //camera_position
+            this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, this.scene.models[i].material.shininess); //material_shininess
+            this.gl.uniform3fv(this.shader[selected_shader].uniforms.material_specular, this.scene.models[i].material.specular); //material_specular
             
             //
             // TODO: bind proper texture and set uniform (if shader is a textured one)

@@ -20,9 +20,11 @@ out vec3 specular;
 
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
-    vec3 N = normalize(vertex_normal);
-    vec3 L = normalize(light_position - vertex_position);
-    vec3 R = reflect(L, N);
+    vec3 changed_vertex_normal = vec3(model_matrix * vec4(vertex_normal, 0.0));
+    vec3 changed_vertex_position = vec3(model_matrix * vec4(vertex_position, 1.0));
+    vec3 N = normalize(changed_vertex_normal);
+    vec3 L = normalize(light_position - changed_vertex_position);
+    vec3 R = reflect(-L, N);
     float ln = dot(N, L);
     if (ln < 0.0){
         ln = 0.0;
@@ -30,7 +32,7 @@ void main() {
     vec3 intensity = light_color; //Ip
     ambient = light_ambient;
     diffuse = intensity * ln;
-    vec3 V = normalize(camera_position - vertex_position);
+    vec3 V = normalize(camera_position - changed_vertex_position);
     float rv = dot(R, V);
     if (rv < 0.0){
         rv = 0.0;
