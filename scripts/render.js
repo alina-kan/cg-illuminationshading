@@ -47,6 +47,38 @@ function init() {
                         {
                             position: vec3.fromValues(1.5, 3.0, -4.5),  // x, y, z
                             color: vec3.fromValues(1.0, 1.0, 0.8)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(0.5, 3.0, -4.5),  // x, y, z
+                            color: vec3.fromValues(0.8, 1.0, 0.8)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(-.5, 3.0, -4.5),  // x, y, z
+                            color: vec3.fromValues(0.7, 0.2, 0.8)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(-.9, 1.5, -4.5),  // x, y, z
+                            color: vec3.fromValues(1.0, 1.0, 1.0)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(1.9, 3.0, -4.5),  // x, y, z
+                            color: vec3.fromValues(0.0, 0.1, 0.8)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(1.5, 1.0, -4.5),  // x, y, z
+                            color: vec3.fromValues(0.55, 0.55, 0.55)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(0.5, 3.7, -4.5),  // x, y, z
+                            color: vec3.fromValues(0.0, 1.0, 0.0)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(-.3, 2.5, -4.5),  // x, y, z
+                            color: vec3.fromValues(1.0, 0.0, 0.2)  // red, green, blue
+                        },
+                        {
+                            position: vec3.fromValues(-.9, 3.0, -4.5),  // x, y, z
+                            color: vec3.fromValues(0.75, 1.0, 0.22)  // red, green, blue
                         }
                     ]
                 }
