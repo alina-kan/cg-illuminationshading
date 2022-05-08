@@ -129,6 +129,17 @@ class GlApp {
         //
         // TODO: set texture parameters and upload a temporary 1px white RGBA array [255,255,255,255]
         // 
+        let pixels = [255, 255, 255, 255];
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+
+        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR); //nearest?
+        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT); //clamp_to_edge?
+        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
+
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(pixels));
+
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
         // download the actual image
         let image = new Image();
@@ -145,6 +156,11 @@ class GlApp {
     updateTexture(texture, image_element) {
         //
         // TODO: update image for specified texture
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image_element);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+
+        this.render(); //don't know if I need this
         //
     }
 
@@ -179,7 +195,7 @@ class GlApp {
             //also set for other values in shaders
             this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_ambient, this.scene.light.ambient); //light_ambient
 
-            //change something here?
+            
             //array
             let light_positions = new Float32Array(30);//will be 30
             let light_colors = new Float32Array(30); //will be 30
@@ -204,11 +220,29 @@ class GlApp {
             
             //
             // TODO: bind proper texture and set uniform (if shader is a textured one)
-            //
+            // --HERE
 
-            this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);
-            this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
-            this.gl.bindVertexArray(null);
+            if(this.scene.models[i].shader == "texture"){
+                //don't really know how to do this
+                /*
+                gl.bindVertexArray(app.square);
+                //select texture
+                // first texture in active texture array created
+                gl.activeTexture(gl.TEXTURE0);
+                // bind the texture we created 
+                gl.bindTexture(gl.TEXTURE_2D, app.texture);
+                // select the texture we created and rename it
+                gl.uniform1i(app.uniforms.square_texture1, 0);
+                // Draw the selected 'vertex array object' (using squares) with selected texture
+                gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+                // Unselect texture object
+                gl.bindTexture(gl.TEXTURE_2D, null);
+                // Unselect our square 'vertex array object'
+                gl.bindVertexArray(null);
+                */
+
+            }
+
         }
 
         // draw all light sources
