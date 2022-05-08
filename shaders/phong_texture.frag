@@ -18,5 +18,30 @@ uniform sampler2D image;          // use in conjunction with Ka and Kd
 out vec4 FragColor;
 
 void main() {
-    FragColor = vec4(material_color, 1.0) * texture(image, frag_texcoord);
+
+        vec3 N = normalize(frag_normal);
+    //vec3 L = normalize(light_position[0] - frag_pos);
+    //vec3 V = normalize(camera_position - frag_pos);
+   // vec3 R = 2.0*(dot(N, L))*N - L; 
+
+    vec4 diffuse;
+    vec4 specular;
+    for(int i = 0; i <10; i++){
+      //  console.log("light ")
+        vec3 L = normalize(light_position[i] - frag_pos);
+        vec3 V = normalize(camera_position - frag_pos);
+        vec3 R = 2.0*(dot(N, L))*N - L; 
+        vec4 diffuse_temp = vec4(light_color[i] * material_color *max(dot(N, L), 0.0), 1.0);
+        vec4 specular_temp = vec4( light_color[i] * material_specular* pow( max(dot(R, V), 0.0), material_shininess) , 1.0);
+        diffuse = diffuse + diffuse_temp;
+        specular = specular + specular_temp; 
+    }
+
+    vec4 ambient = vec4(light_ambient * material_color, 1.0);
+    //vec4 diffuse = vec4(light_color[0] * material_color *max(dot(N, L), 0.0), 1.0);
+    //vec4 specular = vec4( light_color[0] * material_specular* pow( max(dot(R, V), 0.0), material_shininess) , 1.0); 
+
+   // FragColor = vec4(ambient + diffuse + specular); 
+    FragColor = vec4(ambient + diffuse + specular)* texture(image, frag_texcoord);
+   // FragColor = vec4(material_color, 1.0) * texture(image, frag_texcoord);
 }
