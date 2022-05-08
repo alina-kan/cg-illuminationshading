@@ -179,7 +179,6 @@ class GlApp {
             //also set for other values in shaders
             this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_ambient, this.scene.light.ambient); //light_ambient
 
-
             //change something here?
             //array
             let light_positions = new Float32Array(30);//will be 30

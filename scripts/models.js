@@ -521,8 +521,8 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         vertices.push(circle_bottom_cover_vertices[i]);
     }
 
-    console.log(vertices);
-    console.log(normals);
+    console.log(vertices.length/3);
+    //console.log(normals);
 
     // store array of vertex positions in the vertex_position_buffer
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -550,18 +550,89 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     // set newly created buffer as the active one we are modifying
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_texcoord_buffer);
     // create array of 2D texture coordinate values (each set of 2 values specifies texture coordinate: u, v)
-    
-    for (let i = 0; i < sides; i++){
-
+    // bottom coordinates based on circle rim
+    let bottom_v = 0.1;
+    let bottom_u = 0.0;
+    // top coordinates based on circle rim
+    let top_v = 0.9;
+    let top_u = 1.0;
+    //console.log(1.0/sides);
+    texcoords.push(bottom_u, bottom_v);
+    for (let i = 1; i < sides; i++){
+        //recalculate u, dumby
+        bottom_u = bottom_u + (1.0/(sides-1));
+        texcoords.push(bottom_u, bottom_v);
     }
+    console.log(texcoords);
 
-    texcoords = [
-        0.0,  0.0,
-        1.0,  0.0,
-        1.0,  1.0,
-        0.0,  1.0
-    ]; 
+    texcoords.push(top_u, top_v);
+    for (let i = 1; i < sides; i++){
+        //recalculate u, dumby
+        top_u = top_u - (1.0/(sides-1));
+        texcoords.push(top_u, top_v);
+    }
+    console.log(texcoords.length);
 
+    let top_rim_center_v = 0.95;
+    let top_rim_center_u = 0.5;
+    let bottom_rim_center_v = 0.05;
+    let bottom_rim_center_u = 0.5;
+
+    texcoords.push(top_rim_center_u, top_rim_center_v);
+    texcoords.push(bottom_rim_center_u, bottom_rim_center_v);
+
+    //circles - both rim and covers
+    let top_cover_center_v = 0.95;
+    let top_cover_center_u = 0.5;
+    let bottom_cover_center_v = 0.05;
+    let bottom_cover_center_u = 0.5;
+
+    //bottom rim circle texture coordinates
+    texcoords.push(bottom_cover_center_u, bottom_cover_center_v);
+    texcoords.push(bottom_cover_center_u, 0.0);
+    texcoords.push(1.0, 0.0);
+    texcoords.push(1.0, 0.05);
+    texcoords.push(1.0, 0.1);
+    texcoords.push(0.5, 0.1);
+    texcoords.push(0.0, 0.1);
+    texcoords.push(0.0, 0.05);
+    texcoords.push(0.0, 0.0);
+
+    //top rim circle texture coordinates
+    texcoords.push(top_cover_center_u, top_cover_center_v);
+    texcoords.push(top_cover_center_u, 0.9);
+    texcoords.push(1.0, 0.9);
+    texcoords.push(1.0, 0.95);
+    texcoords.push(1.0, 1.0);
+    texcoords.push(0.5, 1.0);
+    texcoords.push(0.0, 1.0);
+    texcoords.push(0.0, 0.95);
+    texcoords.push(0.0, 0.9);
+
+    /*
+    //bottom cover circle texture coordinates
+    texcoords.push(bottom_cover_center_u, bottom_cover_center_v);
+    texcoords.push(bottom_cover_center_u, 0.0);
+    texcoords.push(1.0, 0.0);
+    texcoords.push(1.0, 0.05);
+    texcoords.push(1.0, 0.1);
+    texcoords.push(0.5, 0.1);
+    texcoords.push(0.0, 0.1);
+    texcoords.push(0.0, 0.05);
+    texcoords.push(0.0, 0.0);
+
+    //top cover circle texture coordinates
+    texcoords.push(top_cover_center_u, top_cover_center_v);
+    texcoords.push(top_cover_center_u, 0.9);
+    texcoords.push(1.0, 0.9);
+    texcoords.push(1.0, 0.95);
+    texcoords.push(1.0, 1.0);
+    texcoords.push(0.5, 1.0);
+    texcoords.push(0.0, 1.0);
+    texcoords.push(0.0, 0.95);
+    texcoords.push(0.0, 0.9); */
+
+    console.log(texcoords.length);
     // store array of vertex texture coordinates in the vertex_texcoord_buffer
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
     // enable texcoord_attrib in our GPU program
@@ -603,7 +674,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
             // for sides = 8, start i = 1 -> push(1+9+1= 11, 1+1= 2, 1)
         }
     }
-    console.log(indices);
+    //console.log(indices);
 
     // store array of vertex indices in the vertex_index_buffer
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
