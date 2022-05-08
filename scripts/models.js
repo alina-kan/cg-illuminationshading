@@ -330,6 +330,9 @@ function createSphereVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         }
     }
 
+    //console.log(vertices.length);
+    //console.log(normals.length);
+    //console.log(indices.length);
     
     // create buffer to store vertex positions (3D points)
     let vertex_position_buffer = gl.createBuffer();
@@ -381,10 +384,8 @@ function createSphereVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     // no longer modifying our Vertex Array Object, so deselect
     gl.bindVertexArray(null);
 
-
     // store the number of vertices used for entire model (number of faces * 3)
     vertex_array.face_index_count = indices.length;
-
 
     // return created Vertex Array Object
     return vertex_array;
@@ -408,67 +409,121 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_position_buffer);
     // create array of 3D vertex values (each set of 3 values specifies a vertex: x, y, z)
 
-    let center = vec3.fromValues(12, 10, -49);
-    let radius = 5;
-    let height = 3;
-    let sides = 8;
+    //let center = vec3.fromValues(1.0, 5.0, 1.0);
+    let radius = 1.0;
+    let height = 3.0;
+    let sides = 8.0;
 
-    let circle_x = center.x;
-    let circle_y_bottom = center.y - (height/2);
-    let circle_y = center.y;
-    let circle_y_top = center.y + (height/2);
-    let circle_z = center.z;
+    let circle_x = 1.0;
+    let circle_y_bottom = 5.0 - (height/2.0);
+    let circle_y_top = 5.0 + (height/2.0);
+    let circle_z = 1.0;
 
-    let top_x = 0;
-    let top_z = 0;
-    let bottom_x = 0;
-    let bottom_z = 0;
-    let radians = 0;
-    let pt = vec4.fromValues((circle_x + radius), circle_y, circle_z, 1.0);
-    let verts = [];
-    let circle_top_vertices = [];
-    let circle_bottom_vertices = [];
+    let top_x = 0.0;
+    let top_z = 0.0;
+    let top_norm_x = 0.0;
+    let top_norm_z = 0.0;
+    let bottom_x = 0.0;
+    let bottom_z = 0.0;
+    let bottom_norm_x = 0.0;
+    let bottom_norm_z = 0.0;
+    let radians = 0.0;
+    
+    let circle_top_rim_vertices = [];
+    let circle_bottom_rim_vertices = [];
+    let circle_top_cover_vertices = [];
+    let circle_bottom_cover_vertices = []; 
+
+    let vertices = [];
+    let normals = [];
+    let texcoords = [];
 
     //vertices of circles
-    // * top circle: (x, y + 1/2*height, z)
-    let center_pt_top = vec4.fromValues(circle_x, circle_y_top, circle_z, 1.0);
-    circle_top_vertices.push(center_pt_top);
+    //center pt top rim = circle_x, circle_y_top, circle_z
+    //center pt bottom rim = circle_x, circle_y_bottom, circle_z
+    //center pt top cover = circle_x, circle_y_top, circle_z
+    //center pt bottom cover = circle_x, circle_y_bottom, circle_z
+
+    // * top circle: (x, y + 1/2*height, z), rim
+    circle_top_rim_vertices.push(circle_x, circle_y_top, circle_z);
+    normals.push(0.0, 1.0, 0.0);
     for (let i = 0; i < sides; i++){
-        //create each vertex
         radians = radians + ((Math.PI * 2)/sides);
         top_x = circle_x + radius * (Math.cos(radians));
         top_z = circle_z + radius * (Math.sin(radians));
 
-        pt = vec4.fromValues(top_x, circle_y_top, top_z, 1.0);
+        top_norm_x = radius * (Math.cos(radians));
+        top_norm_z = radius * (Math.sin(radius));
 
-        circle_top_vertices.push(pt);
+        circle_top_rim_vertices.push(top_x, circle_y_top, top_z);
+        normals.push(top_norm_x, 0.0, top_norm_z);
     }
-    
-    // * bottom circle
-    let center_pt_bottom = vec4.fromValues(circle_x, circle_y_bottom, circle_z, 1.0);
-    circle_bottom_vertices.push(center_pt_bottom);
+    //console.log(circle_top_rim_vertices.length);
+    //console.log(normals.length);
+
+    // * bottom circle: (x, y - 1/2*height, z), rim
+    circle_bottom_rim_vertices.push(circle_x, circle_y_bottom, circle_z);
+    normals.push(0.0, -1.0, 0.0);
     for (let i = 0; i < sides; i++){
         //create each vertex
         radians = radians + ((Math.PI * 2)/sides);
         bottom_x = circle_x + radius * (Math.cos(radians));
         bottom_z = circle_z + radius * (Math.sin(radians));
 
-        pt = vec4.fromValues(bottom_x, circle_y_bottom, bottom_z, 1.0);
+        bottom_norm_x = radius * (Math.cos(radians));
+        bottom_norm_z = radius * (Math.sin(radius));
 
-        circle_bottom_vertices.push(pt);
+        circle_bottom_rim_vertices.push(bottom_x, circle_y_bottom, bottom_z);
+        normals.push(bottom_norm_x, 0.0, bottom_norm_z);
     }
 
-    //console.log(circle_top_vertices);
-    //console.log(circle_bottom_vertices);
-    for (let i = 0; i < circle_top_vertices.length; i++){
-        verts.push(circle_top_vertices[i]);
+    // * top circle: (x, y + 1/2*height, z), cover
+    circle_top_cover_vertices.push(circle_x, circle_y_top, circle_z);
+    normals.push(0.0, 1.0, 0.0);
+    for (let i = 0; i < sides; i++){
+        //create each vertex
+        radians = radians + ((Math.PI * 2)/sides);
+        top_x = circle_x + radius * (Math.cos(radians));
+        top_z = circle_z + radius * (Math.sin(radians));
 
-    }
-    for (let i = 0; i < circle_bottom_vertices.length; i++){
-        verts.push(circle_bottom_vertices[i]);
+        circle_top_cover_vertices.push(top_x, circle_y_top, top_z);
+        normals.push(0.0, 1.0, 0.0);
     }
 
-    let vertices = verts;
+    // * bottom circle: (x, y - 1/2*height, z), rim
+    circle_bottom_cover_vertices.push(circle_x, circle_y_bottom, circle_z);
+    normals.push(0.0, -1.0, 0.0);
+    for (let i = 0; i < sides; i++){
+        //create each vertex
+        radians = radians + ((Math.PI * 2)/sides);
+        bottom_x = circle_x + radius * (Math.cos(radians));
+        bottom_z = circle_z + radius * (Math.sin(radians));
+
+        circle_bottom_cover_vertices.push(bottom_x, circle_y_bottom, bottom_z);
+        normals.push(0.0, -1.0, 0.0);
+    }
+
+    //now that 4 different vertex arrays have been created, combine
+    // into one vertices array
+    for (let i = 0; i < circle_top_rim_vertices.length; i++){
+        vertices.push(circle_top_rim_vertices[i]);
+    }
+
+    for (let i = 0; i < circle_bottom_rim_vertices.length; i++){
+        vertices.push(circle_bottom_rim_vertices[i]);
+    }
+
+    for (let i = 0; i < circle_top_cover_vertices.length; i++){
+        vertices.push(circle_top_cover_vertices[i]);
+    }
+
+    for (let i = 0; i < circle_bottom_cover_vertices.length; i++){
+        vertices.push(circle_bottom_cover_vertices[i]);
+    }
+
+    console.log(vertices);
+    console.log(normals);
+
     // store array of vertex positions in the vertex_position_buffer
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     // enable position_attrib in our GPU program
@@ -482,13 +537,6 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     let vertex_normal_buffer = gl.createBuffer();
     // set newly created buffer as the active one we are modifying
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_normal_buffer);
-    // create array of 3D vector values (each set of 3 values specifies a normalized vector: x, y, z)
-    let normals = [
-        0.0, 1.0, 0.0,
-        0.0, 1.0, 0.0,
-        0.0, 1.0, 0.0,
-        0.0, 1.0, 0.0
-    ];
     // store array of vertex normals in the vertex_normal_buffer
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
     // enable normal_attrib in our GPU program
@@ -497,18 +545,23 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     // (as 3-component floating point values)
     gl.vertexAttribPointer(normal_attrib, 3, gl.FLOAT, false, 0, 0);
 
-
     // create buffer to store texture coordinate (2D coordinates for mapping images to the surface)
     let vertex_texcoord_buffer = gl.createBuffer();
     // set newly created buffer as the active one we are modifying
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_texcoord_buffer);
     // create array of 2D texture coordinate values (each set of 2 values specifies texture coordinate: u, v)
-    let texcoords = [
+    
+    for (let i = 0; i < sides; i++){
+
+    }
+
+    texcoords = [
         0.0,  0.0,
         1.0,  0.0,
         1.0,  1.0,
         0.0,  1.0
-    ];
+    ]; 
+
     // store array of vertex texture coordinates in the vertex_texcoord_buffer
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
     // enable texcoord_attrib in our GPU program
@@ -516,49 +569,47 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     // attach vertex_texcoord_buffer to the texcoord_attrib
     // (as 2-component floating point values)
     gl.vertexAttribPointer(texcoord_attrib, 2, gl.FLOAT, false, 0, 0);
-
-     // create buffer to store faces of the triangle
-     let vertex_index_buffer = gl.createBuffer();
-     // set newly created buffer as the active one we are modifying
+    
+    // create buffer to store faces of the triangle
+    let vertex_index_buffer = gl.createBuffer();
+    // set newly created buffer as the active one we are modifying
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertex_index_buffer);
-     // create array of vertex indices (each set of 3 represents a triangle)
-     //edges
-    let indices = [
-        //top circle fan
-        0, 1, 2,
-        0, 2, 3,
-        0, 3, 4,
-        0, 4, 5,
-        0, 5, 6,
-        0, 6, 7,
-        0, 7, 1,
-        //sides
-        1, 9, 2,
-        9, 2, 10,
-        2, 10, 3,
-        10, 3, 11,
-        3, 11, 4,
-        11, 4, 12,
-        4, 12, 5,
-        12, 5, 13,
-        5, 13, 6,
-        13, 6, 14,
-        6, 14, 7,
-        14, 7, 15,
-        //bottom circle fan
-        8, 9, 10,
-        8, 10, 11,
-        8, 11, 12,
-        8, 12, 13,
-        8, 13, 14,
-        8, 14, 15,
-        8, 15, 9
-    ];
-     // store array of vertex indices in the vertex_index_buffer
-     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
- 
-     // no longer modifying our Vertex Array Object, so deselect
-     gl.bindVertexArray(null);
+    // create array of vertex indices (each set of 3 represents a triangle)
+    // edges - we are only concerned about the rim vertices, so up to sides*2
+    let indices = [];
+    let ring_offset = sides + 1;
+    // sides = 8 -> ring_offset = 9
+    // bottom to top coutner clock
+    for (let i = 1; i < sides + 1; i++){
+        // vertices 1 - 9
+        if (i == sides){
+            indices.push(ring_offset+1, i + ring_offset, sides);
+            // for sides = 8 -> push(9+1= 10, 8+9= 17, 8)
+        } else {
+            indices.push(i+ring_offset+1, i + ring_offset, i);
+            // for sides = 8, start i = 1 -> push(1+9+1= 11, 1+9= 10, 1)
+        }
+    }
+    //console.log(indices);
+
+    // top to bottom counter clock
+    for (let i = 1; i < sides + 1; i++){
+        // vertices 1 - 9
+        if (i == sides){
+            indices.push(ring_offset+1, 1, sides);
+            // for sides = 8 -> push(9+1= 10, 1, 8)
+        } else {
+            indices.push(i+ring_offset+1, i + 1, i);
+            // for sides = 8, start i = 1 -> push(1+9+1= 11, 1+1= 2, 1)
+        }
+    }
+    console.log(indices);
+
+    // store array of vertex indices in the vertex_index_buffer
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+    // no longer modifying our Vertex Array Object, so deselect
+    gl.bindVertexArray(null);
 
     // store the number of vertices used for entire model (number of faces * 3)
     vertex_array.face_index_count = indices.length;
