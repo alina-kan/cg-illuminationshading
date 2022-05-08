@@ -131,11 +131,13 @@ class GlApp {
         // 
         let pixels = [255, 255, 255, 255];
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-
+        /*
         this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR); //nearest?
         this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
         this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT); //clamp_to_edge?
-        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
+        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT); */
+        this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(pixels));
 
@@ -162,6 +164,7 @@ class GlApp {
 
         this.render(); //don't know if I need this
         //
+
     }
 
     render() {
@@ -175,11 +178,16 @@ class GlApp {
             //
             // TODO: properly select shader here
             //
+            let selected_shader;
+
+            if (this.scene.models[i].shader == 'color'){
+                selected_shader = this.algorithm + '_color';
+            } else {
+                selected_shader = this.algorithm + '_texture';
+            }
             
-            let selected_shader = this.algorithm + '_color';
             this.gl.useProgram(this.shader[selected_shader].program);
             
-
             // transform model to proper position, size, and orientation
             glMatrix.mat4.identity(this.model_matrix);
             glMatrix.mat4.translate(this.model_matrix, this.model_matrix, this.scene.models[i].center);
@@ -212,8 +220,6 @@ class GlApp {
             this.gl.uniform3fv(this.shader[selected_shader].uniforms["light_position[0]"], light_positions);//this.scene.light.point_lights[0].position); //light_position
             this.gl.uniform3fv(this.shader[selected_shader].uniforms["light_color[0]"], light_colors);//this.scene.light.point_lights[0].color); //light_color
 
-
-
             this.gl.uniform3fv(this.shader[selected_shader].uniforms.camera_position, this.scene.camera.position); //camera_position
             this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, this.scene.models[i].material.shininess); //material_shininess
             this.gl.uniform3fv(this.shader[selected_shader].uniforms.material_specular, this.scene.models[i].material.specular); //material_specular
@@ -243,7 +249,9 @@ class GlApp {
 
             }
 
-        }
+            this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);
+            this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);
+            this.gl.bindVertexArray(null);
 
         // draw all light sources
         for (let i = 0; i < this.scene.light.point_lights.length; i ++) {
@@ -263,6 +271,7 @@ class GlApp {
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array['sphere'].face_index_count, this.gl.UNSIGNED_SHORT, 0);
             this.gl.bindVertexArray(null);
         }
+    }
     }
 
     updateScene(scene) {
