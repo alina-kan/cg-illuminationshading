@@ -15,7 +15,7 @@
                 "shininess": 4
             },
             "texture": {
-                "url": "images/dog.jpg",
+                "url": "images/Checkered.jpg",
                 "scale": [3, 3]
             },
             "center": [1.0, 1.0, -1.0],
