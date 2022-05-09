@@ -16,5 +16,8 @@ void main() {
     vec3 I = ambient * material_color;
     I = I + (diffuse * material_color);
     I = I + (specular * material_specular);
+    if (all(greaterThan(I, vec3(1.0)))){
+        I = vec3(1.0, 1.0, 1.0);
+    }
     FragColor = vec4(I, 1.0);
 }

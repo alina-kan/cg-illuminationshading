@@ -46,7 +46,12 @@ void main() {
     //vec4 diffuse = vec4(light_color[0] * material_color *max(dot(N, L), 0.0), 1.0);
     //vec4 specular = vec4( light_color[0] * material_specular* pow( max(dot(R, V), 0.0), material_shininess) , 1.0); 
 
-    FragColor = vec4(ambient + diffuse + specular); 
+    vec4 I = ambient + diffuse + specular;
+    if (all(greaterThan(I, vec4(1.0)))){
+        I = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+
+    FragColor = I; 
 }
 
 
