@@ -21,11 +21,11 @@
             "type": "sphere",
             "shader": "color",
             "material": {
-                "color": [0.15, 0.15, 0.15],
+                "color": [0.25, 0.25, 0.25],
                 "specular": [1.0, 1.0, 1.0],
                 "shininess": 25
             },
-            "center": [-0.5, 1.0, -3.0],
+            "center": [1.0, 1.0, -3.0],
             "size": [1.0, 1.0, 1.0]
         },
         {
