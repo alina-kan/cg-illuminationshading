@@ -21,7 +21,7 @@
             "type": "sphere",
             "shader": "color",
             "material": {
-                "color": [0.0, 0.0, 0.0],
+                "color": [1.0, 1.0, 0.0],
                 "specular": [1.0, 1.0, 1.0],
                 "shininess": 25
             },
@@ -54,27 +54,16 @@
             "type": "sphere",
             "shader": "color",
             "material": {
-                "color": [0.0, 0.0, 0.9],
+                "color": [0.5, 1.0, 0.9],
                 "specular": [1.0, 1.0, 1.0],
                 "shininess": 1
             },
             "center": [0.7, 1.0, -3.0],
             "size": [0.5, 0.5, 0.5]
-        },
-        {
-            "type": "custom",
-            "shader": "color",
-            "material": {
-                "color": [1.0, 0.876, 0.138],
-                "specular": [1.0, 1.0, 1.0],
-                "shininess": 30
-            },
-            "center": [1.5, 0, 0.0],
-            "size": [8.0, 2.0, 6.0]
         }
     ],
     "light": {
-        "ambient": [0.20, 0.15, 0.45],
+        "ambient": [0.90, 0.15, 0.45],
         "point_lights": [
             {
                 "position": [0.5, 1.0, 3.5],
