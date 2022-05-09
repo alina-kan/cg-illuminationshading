@@ -131,13 +131,11 @@ class GlApp {
         // 
         let pixels = [255, 255, 255, 255];
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-        /*
-        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR); //nearest?
-        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT); //clamp_to_edge?
-        this.gl.texParametri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT); */
-        this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        this.gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR); //nearest?
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT); //clamp_to_edge?
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
 
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array(pixels));
 
@@ -229,6 +227,24 @@ class GlApp {
             // --HERE
 
             if(this.scene.models[i].shader == "texture"){
+                if (this.scene.models[i].type == 'plane'){
+                    this.gl.activeTexture(this.gl.TEXTURE0);
+                    this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.models[i].texture.id);
+                    this.gl.uniform1i(this.shader[selected_shader].uniforms.image, 0);
+                } else if (this.scene.models[i].type == 'sphere') {
+                    this.gl.activeTexture(this.gl.TEXTURE1);
+                    this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.models[i].texture.id);
+                    this.gl.uniform1i(this.shader[selected_shader].uniforms.image, 1);
+                } else if (this.scene.models[i].type == 'cube') {
+                    this.gl.activeTexture(this.gl.TEXTURE2);
+                    this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.models[i].texture.id);
+                    this.gl.uniform1i(this.shader[selected_shader].uniforms.image, 2);
+                } else {
+                    //custom
+                    this.gl.activeTexture(this.gl.TEXTURE3);
+                    this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.models[i].texture.id);
+                    this.gl.uniform1i(this.shader[selected_shader].uniforms.image, 3);
+                }
                 //don't really know how to do this
                 /*
                 gl.bindVertexArray(app.square);
