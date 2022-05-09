@@ -20,7 +20,7 @@ out vec3 specular;
 
 void main() {
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertex_position, 1.0);
-    vec3 changed_vertex_normal = vec3(model_matrix * vec4(vertex_normal, 0.0));
+    vec3 changed_vertex_normal = normalize(transpose(inverse(mat3(model_matrix))) * vertex_normal);
     vec3 changed_vertex_position = vec3(model_matrix * vec4(vertex_position, 1.0));
     vec3 N = normalize(changed_vertex_normal);
 

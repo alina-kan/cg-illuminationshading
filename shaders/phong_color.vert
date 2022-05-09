@@ -14,7 +14,7 @@ out vec3 frag_normal;
 
 
 void main() {
-    frag_normal = vec3(model_matrix * vec4(vertex_normal, 0.0)); //will need to add inverse of transpose for non-uniform scaling
+    frag_normal = normalize(transpose(inverse(mat3(model_matrix))) * vertex_normal); //will need to add inverse of transpose for non-uniform scaling
 
     frag_pos = vec3(model_matrix * vec4(vertex_position, 1.0));
 
