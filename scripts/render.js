@@ -48,10 +48,10 @@ function init() {
                             specular: vec3.fromValues(1.0, 1.0, 1.0),  // red, green, blue
                             shininess: 32
                         },
-                        center: vec3.fromValues(0.0, 1.0, -2.0), // x, y, z
-                        size: vec3.fromValues(2.0, 2.0, 2.0),  // width, height, depth
+                        center: vec3.fromValues(0.0, 3.0, -12.0), // x, y, z
+                        size: vec3.fromValues(1.0, 1.0, 1.0),  // width, height, depth
                         rotate_x: 0,
-                        rotate_y: 0,
+                        rotate_y: 60,
                         rotate_z: 0
                     }
                 ],

@@ -411,12 +411,12 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
 
     //let center = vec3.fromValues(1.0, 5.0, 1.0);
     let radius = 1.0;
-    let height = 3.0;
+    let height = 2.0;
     let sides = 8.0;
 
     let circle_x = 1.0;
-    let circle_y_bottom = 5.0 - (height/2.0);
-    let circle_y_top = 5.0 + (height/2.0);
+    let circle_y_bottom = 1.0 - (height/2.0);
+    let circle_y_top = 1.0 + (height/2.0);
     let circle_z = 1.0;
 
     let top_x = 0.0;
@@ -453,7 +453,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         top_z = circle_z + radius * (Math.sin(radians));
 
         top_norm_x = radius * (Math.cos(radians));
-        top_norm_z = radius * (Math.sin(radius));
+        top_norm_z = radius * (Math.sin(radians));
 
         circle_top_rim_vertices.push(top_x, circle_y_top, top_z);
         normals.push(top_norm_x, 0.0, top_norm_z);
@@ -471,7 +471,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         bottom_z = circle_z + radius * (Math.sin(radians));
 
         bottom_norm_x = radius * (Math.cos(radians));
-        bottom_norm_z = radius * (Math.sin(radius));
+        bottom_norm_z = radius * (Math.sin(radians));
 
         circle_bottom_rim_vertices.push(bottom_x, circle_y_bottom, bottom_z);
         normals.push(bottom_norm_x, 0.0, bottom_norm_z);
@@ -521,7 +521,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         vertices.push(circle_bottom_cover_vertices[i]);
     }
 
-    console.log(vertices.length/3);
+    //console.log(vertices.length/3);
     //console.log(normals);
 
     // store array of vertex positions in the vertex_position_buffer
@@ -563,7 +563,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         bottom_u = bottom_u + (1.0/(sides-1));
         texcoords.push(bottom_u, bottom_v);
     }
-    console.log(texcoords);
+    //console.log(texcoords);
 
     texcoords.push(top_u, top_v);
     for (let i = 1; i < sides; i++){
@@ -571,7 +571,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         top_u = top_u - (1.0/(sides-1));
         texcoords.push(top_u, top_v);
     }
-    console.log(texcoords.length);
+    //console.log(texcoords.length);
 
     let top_rim_center_v = 0.95;
     let top_rim_center_u = 0.5;
@@ -632,7 +632,8 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     texcoords.push(0.0, 0.95);
     texcoords.push(0.0, 0.9); */
 
-    console.log(texcoords.length);
+    //console.log(texcoords.length);
+    
     // store array of vertex texture coordinates in the vertex_texcoord_buffer
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
     // enable texcoord_attrib in our GPU program
@@ -674,6 +675,28 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
             // for sides = 8, start i = 1 -> push(1+9+1= 11, 1+1= 2, 1)
         }
     }
+    //console.log(indices);
+
+    // top circle cover
+    for (let i = 1; i < sides + 1; i++){
+        if (i == sides){
+            indices.push(18, 26, 19);
+            // for vertex = 26 -> (18, 18+(9-1)= 26, 18+1= 19)
+        } else {
+            indices.push(18, 18+i, 18+i+1);
+        }
+    }
+
+    // bottom circle cover
+    for (let i = 1; i < sides + 1; i++){
+        if (i == sides){
+            indices.push(27, 35, 28);
+            // for vertex = 35 -> (27, 27+(9-1)= 35, 27+1= 28)
+        } else {
+            indices.push(27, 27+i, 27+i+1);
+        }
+    }
+
     //console.log(indices);
 
     // store array of vertex indices in the vertex_index_buffer
