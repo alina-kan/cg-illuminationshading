@@ -1,5 +1,5 @@
 {
-    "background": [0.1, 0.1, 0.1],
+    "background": [0.4, 0.4, 0.4],
     "camera": {
         "position": [0.0, 12.5, 0.0],
         "target": [0.0, 0.0, 0.0],
@@ -63,7 +63,7 @@
         }
     ],
     "light": {
-        "ambient": [0.90, 0.15, 0.45],
+        "ambient": [0.20, 0.15, 0.45],
         "point_lights": [
             {
                 "position": [0.5, 1.0, 3.5],
